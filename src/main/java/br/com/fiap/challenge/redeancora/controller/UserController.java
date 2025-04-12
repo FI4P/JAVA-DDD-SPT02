@@ -30,5 +30,10 @@ public class UserController {
         System.out.println("Usuário criado com sucesso!");
     }
 
+    public User authenticateUser(String email, String password) throws SQLException {
+        return userDAO.authenticate(email, password);
+    }
+
+
 
 }

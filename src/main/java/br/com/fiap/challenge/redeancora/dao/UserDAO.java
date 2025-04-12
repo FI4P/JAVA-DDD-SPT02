@@ -4,6 +4,7 @@ import br.com.fiap.challenge.redeancora.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDAO {
@@ -37,6 +38,30 @@ public class UserDAO {
 
 
 
+
+
     }
 
+    public User authenticate(String email, String password) throws SQLException {
+        String query = "SELECT * FROM usuario WHERE email = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, email);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User(rs.getString("id"), rs.getString("name"), rs.getString("email"), rs.getString("password"), rs.getString("role"));
+
+                boolean isAuth = user.authenticate(password);
+
+                return user.authenticate(password) ? user : null;
+            }
+
+            return  null;
+
+        }
+
+
+    }
 }

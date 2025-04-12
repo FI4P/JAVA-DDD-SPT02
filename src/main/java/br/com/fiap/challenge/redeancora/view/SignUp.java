@@ -19,7 +19,7 @@ public class SignUp extends JFrame {
         super("User Registration");
 
         // Configure window
-        setSize(400, 300);
+        setSize(600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -28,24 +28,28 @@ public class SignUp extends JFrame {
         panel.setLayout(new GridLayout(6, 2, 10, 10));
 
         // Components
-        JLabel lblName = new JLabel("Name:");
+        JLabel lblName = new JLabel("Nome:");
         txtName = new JTextField();
 
         JLabel lblEmail = new JLabel("Email:");
         txtEmail = new JTextField();
 
-        JLabel lblPassword = new JLabel("Password:");
+        JLabel lblPassword = new JLabel("Senha:");
         txtPassword = new JPasswordField();
 
         JLabel lblRole = new JLabel("Role:");
-        cbRole = new JComboBox<>(new String[]{"MECANICO", "CLIENTE"});
+        cbRole = new JComboBox<>(new String[]{"Mecanico", "Cliente"});
 
-        JButton btnRegister = new JButton("Register");
+        JButton btnRegister = new JButton("Registrar");
+        JButton btnLoginRedirect = new JButton("Login");
 
-        // Button click action
+        //Button actions
         btnRegister.addActionListener(e -> registerUser());
+        btnLoginRedirect.addActionListener(e -> {
+            dispose(); // Close current SignUp window
+            SwingUtilities.invokeLater(Login::new); // Open login screen
+        });
 
-        // Add components to panel
         panel.add(lblName);
         panel.add(txtName);
         panel.add(lblEmail);
@@ -54,10 +58,8 @@ public class SignUp extends JFrame {
         panel.add(txtPassword);
         panel.add(lblRole);
         panel.add(cbRole);
-        panel.add(new JLabel()); // empty placeholder
+        panel.add(btnLoginRedirect);
         panel.add(btnRegister);
-
-        // Add panel to frame and show
         add(panel);
         setVisible(true);
     }
@@ -72,18 +74,12 @@ public class SignUp extends JFrame {
             Connection connection = new DBConnection().getConnection();
             UserController controller = new UserController(connection);
             controller.createUser(name, email, password, role);
-            JOptionPane.showMessageDialog(this, "User registered successfully!");
-            clearFields();
+            JOptionPane.showMessageDialog(this, "Usuario criado com sucesso!");
+            dispose(); // Close SignUp window
+            SwingUtilities.invokeLater(Login::new);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error during registration: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao tentar registrar usuario: " + ex.getMessage());
         }
-    }
-
-    private void clearFields() {
-        txtName.setText("");
-        txtEmail.setText("");
-        txtPassword.setText("");
-        cbRole.setSelectedIndex(0);
     }
 
     public static void main(String[] args) {
